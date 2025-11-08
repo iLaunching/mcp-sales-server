@@ -9,12 +9,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application
 COPY main.py .
 
-# Expose port
-EXPOSE 8081
+# Expose port (Railway will set $PORT dynamically)
+EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8081/health')"
-
-# Run server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8081"]
+# Run server - Railway uses $PORT environment variable
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}
